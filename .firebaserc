@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "au-parking"
+  },
+  "targets": {
+    "au-parking": {
+      "hosting": {
+        "staff": [
+          "staff-au-parking"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
