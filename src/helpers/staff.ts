@@ -1,6 +1,7 @@
 import {
   collection,
   CollectionReference,
+  doc,
   DocumentReference,
   getDoc,
   onSnapshot,
@@ -38,6 +39,10 @@ export const staffCollections = collection(
   Firestore,
   "staffs"
 ) as CollectionReference<Staff>;
+
+// [Documents]
+export const staffDocument = (email: string) =>
+  doc(Firestore, "staffs", email) as DocumentReference<Staff>;
 
 // [Snapshots]
 // S - Staffs snapshot.
@@ -118,12 +123,4 @@ export const editStaff = async (form: EditStaffForm, staff: Staff) => {
       `Cannot edit staff.${err instanceof FirebaseError && ` (${err.message})`}`
     );
   }
-};
-
-// F - Add FCM token.
-export const addFCMToken = async (staff: string, token: string) => {
-  await set(ref(RTDatabase, `fcm_tokens/${token}`), {
-    token: token,
-    staff: staff,
-  });
 };

@@ -6,8 +6,6 @@ import carsReducer from "./cars";
 import customersReducer from "./customers";
 import staffsReducer from "./staffs";
 import transactionsReducer from "./transactions";
-import reportsReducer from "./reports";
-import messagesReducer from "./messages";
 
 const store = configureStore({
   reducer: {
@@ -15,8 +13,6 @@ const store = configureStore({
     customers: customersReducer,
     staffs: staffsReducer,
     transactions: transactionsReducer,
-    reports: reportsReducer,
-    messages: messagesReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),

@@ -85,7 +85,7 @@ type EntranceStateFailed = {
   info: {
     reason: string;
     tid?: string;
-    is_call: boolean;
+    call_staff: boolean;
   };
 } & StateStatusBase<EntranceState>;
 
@@ -137,6 +137,7 @@ type ExitStatePayment = {
   current_state: "payment";
   info: {
     tid: string;
+    call_staff: boolean;
   };
 } & StateStatusBase<ExitState>;
 
@@ -145,6 +146,7 @@ type ExitStateFailed = {
   info: {
     reason: string;
     tid?: string;
+    call_staff: boolean;
   };
 } & StateStatusBase<ExitState>;
 

@@ -12,7 +12,6 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { Moment } from "moment";
 import { useEffect, useState } from "react";
 import { Firestore } from "../utils/firebase";
 import { setTransactions } from "../redux/transactions";
@@ -38,6 +37,7 @@ import { uploadTransactionImage } from "../utils/firebase";
 import { isValidTimestamp } from "../utils/transaction";
 import { transactionPaymentCollection } from "./payment";
 import { setEntranceProcess } from "./setting";
+import { staffDocument } from "./staff";
 
 // [Transaction Helpers]
 
@@ -153,7 +153,7 @@ export const addTransaction = async (
   let transaction: NewTransaction = {
     license_number: license_number,
     timestamp_in: inputToTimestamp(form.timestamp_in),
-    add_by: form.add_by as string,
+    add_by: form.add_by ? staffDocument(form.add_by) : undefined,
   };
   // Check if exists.
   const in_system_transactions = transactions.filter(
@@ -168,9 +168,9 @@ export const addTransaction = async (
       license_number: "This license number is now in the system.",
     });
 
-  // CASE: not mannual add.
+  // CASE: not manual add.
   // DO: set entrance process and return.
-  if (!form.mannual) {
+  if (!form.manual) {
     await setEntranceProcess(transaction.license_number);
     return;
   }

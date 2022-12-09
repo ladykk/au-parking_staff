@@ -4,14 +4,26 @@ import { LicensePlate } from "./Car";
 import { Size } from "../types/tailwind";
 import Badge from "./Badge";
 import {
+  ArrowRightCircleIcon,
+  ArrowRightIcon,
   ChevronDownIcon,
   ComputerDesktopIcon,
+  ShareIcon,
 } from "@heroicons/react/24/solid";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Button } from "./Form";
+import { Button, Input, Select } from "./Form";
 import Modal, { Body, Footer, handleModalFunction } from "./Modal";
 import { useNavigate } from "react-router-dom";
 import Loading from "./Loading";
+import { ArchiveBoxXMarkIcon } from "@heroicons/react/24/solid";
+import { cancelTransaction } from "../helpers/transaction";
+import {
+  CancelTransactionErrors,
+  TransactionWithRef,
+} from "../types/transaction";
+import { handleFormError } from "../utils/error";
+import { setExitGet } from "../helpers/setting";
+import QRCode from "react-qr-code";
 
 // C - Transaction card
 type TransactionCardProps = {
@@ -65,6 +77,7 @@ export function TransactionCard({
   );
 }
 
+// C - Transaction Status Badge
 type TransactionStatusBadgeProps = {
   status: TransactionStatus;
   size?: Size;
@@ -86,6 +99,7 @@ export function TransactionStatusBadge({
   );
 }
 
+// C - Transaction Select
 type TransactionSelectProps = {
   transactions: Array<Transaction> | undefined;
   loading: boolean;
@@ -98,7 +112,6 @@ type TransactionSelectProps = {
   error?: string;
   setError?: Dispatch<SetStateAction<any>>;
 };
-
 export function TransactionSelect({
   transactions = [],
   loading,
@@ -192,25 +205,15 @@ export function TransactionSelect({
   );
 }
 
-import { ArchiveBoxXMarkIcon } from "@heroicons/react/24/solid";
-import { cancelTransaction } from "../helpers/transaction";
-import {
-  CancelTransactionErrors,
-  TransactionWithRef,
-} from "../types/transaction";
-import { handleFormError } from "../utils/error";
-import { setExitGet } from "../helpers/setting";
-
-// [Default states]
-const errorsState = { form: "" };
-
-// C - Transaction
+// C - Transaction Cancel Modal
 type TransactionCancelModalProps = {
   transaction: TransactionWithRef | undefined;
 };
 export function TransactionCancelModal({
   transaction,
 }: TransactionCancelModalProps) {
+  const errorsState = { form: "" };
+
   // [States]
   const [isShowModal, setShowModal] = useState<boolean>(false);
   const [errors, setErrors] = useState<CancelTransactionErrors>(errorsState);
@@ -300,6 +303,7 @@ export function TransactionCancelModal({
   );
 }
 
+// C - Set Transaction Exit
 export function SetTransactionExitModal({
   transaction,
 }: {
@@ -365,5 +369,111 @@ export function SetTransactionExitModal({
         onClick={() => handleModal()}
       />
     </>
+  );
+}
+
+// C - Share Transaction
+type ShareOption = {
+  type: "Transaction" | "Payment";
+  app: "Customer" | "Staff";
+};
+export function ShareTransaction({ tid }: { tid?: string }) {
+  const CUSTOMER_URI = import.meta.env.VITE_LIFF_URI;
+  const STAFF_URI = import.meta.env.VITE_STAFF_URI;
+
+  // [States]
+  const [isModalShow, setModalShow] = useState<boolean>(false);
+  const [form, setForm] = useState<ShareOption>({
+    type: "Payment",
+    app: "Customer",
+  });
+
+  const LINK = `${form.app === "Customer" ? CUSTOMER_URI : STAFF_URI}/${
+    form.app === "Customer" && form.type === "Payment"
+      ? "payment"
+      : "transaction"
+  }/${tid}`;
+
+  // [Functions]
+  // F - Handle modal.
+  const handleModal = handleModalFunction(setModalShow);
+
+  return (
+    <>
+      <ShareIcon
+        className="w-10 h-10 p-1 hover:bg-gray-300 rounded-md hover:cursor-pointer"
+        onClick={() => handleModal()}
+      />
+      <Modal
+        title="Share"
+        isShow={isModalShow}
+        setShow={setModalShow}
+        maxSize="md"
+      >
+        <Body>
+          <div className="bg-white p-2 w-[65%] rounded-lg h-auto aspect-square flex justify-center items-center mx-auto shadow-md border relative mb-5">
+            <QRCode
+              value={LINK}
+              size={256}
+              style={{
+                height: "auto",
+                maxWidth: "100%",
+                width: "100%",
+              }}
+              viewBox={`0 0 256 256`}
+            />
+          </div>
+          <Button onClick={() => navigator.clipboard.writeText(LINK)}>
+            Copy to Clipboard
+          </Button>
+          <div className="w-full"></div>
+        </Body>
+        <Footer>
+          <div className="w-full flex flex-col gap-2">
+            {form.app === "Customer" && (
+              <Select
+                name="type"
+                placeholder="Type"
+                value={form.type}
+                setForm={setForm}
+                options={["Payment", "Transaction"]}
+                noSpacer
+              />
+            )}
+
+            <Select
+              name="app"
+              placeholder="App"
+              value={form.app}
+              setForm={setForm}
+              options={["Customer", "Staff"]}
+              noSpacer
+            />
+          </div>
+        </Footer>
+      </Modal>
+    </>
+  );
+}
+
+// C - TID Input
+export function TIDInput() {
+  const navigate = useNavigate();
+  const [form, setForm] = useState<{ input: string }>({ input: "" });
+  return (
+    <div className="flex items-center">
+      <Input
+        name="input"
+        placeholder="TID"
+        value={form.input}
+        setForm={setForm}
+        sidePlaceHolder
+        noSpacer
+      />
+      <ArrowRightIcon
+        className="w-10 h-10 px-2 py-1 hover:bg-gray-300 rounded-md hover:cursor-pointer border border-gray-300 bg-gray-50"
+        onClick={() => form.input && navigate(`/transaction/${form.input}`)}
+      />
+    </div>
   );
 }

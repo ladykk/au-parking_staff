@@ -13,6 +13,7 @@ import { timestampToString } from "../../utils/datetime";
 import { useGetPendingPayment } from "../../helpers/payment";
 import { useAppSelector } from "../../redux/store";
 import { selectCustomers } from "../../redux/customers";
+import { Link } from "react-router-dom";
 
 function PendingPaymentList() {
   // [States]
@@ -64,7 +65,16 @@ function PendingPaymentList() {
                       <PaymentStatusBadge status={payment.status} />,
                       `฿ ${payment.amount.toFixed(2)}`,
                       timestampToString(payment.timestamp),
-                      customer ? customer.displayName : "-",
+                      customer ? (
+                        <Link
+                          to={`/customer/${customer.uid}`}
+                          className="underline"
+                        >
+                          {customer.displayName}
+                        </Link>
+                      ) : (
+                        "-"
+                      ),
                       <PaymentPreview payment={payment} />,
                     ]}
                   />

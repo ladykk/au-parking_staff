@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { StaffLayout, Header, Main, Panel } from "../../../components/Layout";
 import { timestampToInput, timestampToString } from "../../../utils/datetime";
 import {
@@ -32,6 +32,7 @@ import { FormError, handleFormError } from "../../../utils/error";
 import Feedback from "../../../components/Feedback";
 import { useAppSelector } from "../../../redux/store";
 import { selectCustomers } from "../../../redux/customers";
+import { selectStaffs } from "../../../redux/staffs";
 
 // [Default States]
 const formState = {
@@ -57,6 +58,7 @@ const errorsState = {
 function EditTransaction() {
   // [States]
   const customers = useAppSelector(selectCustomers);
+  const staffs = useAppSelector(selectStaffs);
   const [form, setForm] = useState<EditTransactionForm>(formState);
   const [errors, setErrors] = useState<EditTransactionErrors>(errorsState);
   const [imageInPreview, setImageInPreview] = useState<string>("");
@@ -69,6 +71,9 @@ function EditTransaction() {
   const { transaction, updateTime } = useGetTransaction(tid as string, "Staff");
   useUpdateFilePreview(form.image_in, setImageInPreview);
   useUpdateFilePreview(form.image_out, setImageOutPreview);
+
+  // [Data]
+  const staff = staffs.find((staff) => staff.email === transaction?.add_by?.id);
 
   // [Effects]
   // E - Set transaction into form.
@@ -129,7 +134,7 @@ function EditTransaction() {
               type="Error"
             />
           ) : (
-            <div className="w-full flex flex-col gap-3 lg:flex-row justify-between lg:gap-5">
+            <div className="w-full flex flex-col-reverse gap-3 lg:flex-row justify-between lg:gap-5">
               <div className="flex flex-col gap-3 flex-1">
                 <div className="flex gap-5">
                   <Panel header="Image-In">
@@ -163,7 +168,18 @@ function EditTransaction() {
                       />
                       <TPair
                         header="Add by"
-                        value={transaction.add_by ? "Staff" : "System"}
+                        value={
+                          staff ? (
+                            <Link
+                              to={`/staff/${staff.email}`}
+                              className="underline"
+                            >
+                              {staff.displayName}
+                            </Link>
+                          ) : (
+                            "System"
+                          )
+                        }
                       />
                     </TBody>
                   </Table>
@@ -201,13 +217,27 @@ function EditTransaction() {
                             center
                             data={[
                               <PaymentStatusBadge status={payment.status} />,
-                              payment.amount ? `${payment.amount} ฿` : "-",
+                              payment.amount
+                                ? `${payment.amount.toFixed(2)} ฿`
+                                : "-",
                               timestampToString(payment.timestamp),
                               payment.paid_by
-                                ? customers.find(
-                                    (customer) =>
-                                      customer.uid === payment.paid_by?.id
-                                  )?.displayName ?? "-"
+                                ? (() => {
+                                    const customer = customers.find(
+                                      (customer) =>
+                                        customer.uid === payment.paid_by?.id
+                                    );
+                                    return customer ? (
+                                      <Link
+                                        to={`/customer/${customer.uid}`}
+                                        className="underline"
+                                      >
+                                        {customer.displayName}
+                                      </Link>
+                                    ) : (
+                                      "-"
+                                    );
+                                  })()
                                 : "-",
                               <PaymentPreview payment={payment} />,
                             ]}

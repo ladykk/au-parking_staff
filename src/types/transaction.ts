@@ -25,7 +25,7 @@ export type Transaction = {
 };
 
 export type AddTransactionForm = {
-  mannual: boolean;
+  manual: boolean;
   license_number: string;
   timestamp_in: string;
   image_in: File | null;
@@ -41,11 +41,11 @@ export type AddTransactionErrors = {
 };
 
 export type NewTransaction = {
-  [index: string]: string | Timestamp | undefined;
+  [index: string]: string | Timestamp | DocumentReference<Staff> | undefined;
   license_number: string;
   timestamp_in: Timestamp;
   image_in?: string;
-  add_by: string;
+  add_by?: DocumentReference<Staff>;
 };
 
 export type EditTransaction = {

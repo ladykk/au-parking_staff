@@ -19,9 +19,7 @@ import logo from "../assets/logo.png";
 import { ProfilePhoto } from "../components/User";
 import moment from "moment";
 import { Node } from "../types/setting";
-import { useMessages } from "../helpers/message";
 import { useAppDispatch } from "../redux/store";
-import { NotificationPane } from "./Notification";
 
 // [Components]
 // C - Staff heaader.
@@ -55,7 +53,7 @@ export function Header({
         </div>
       </div>
       {btns && (
-        <div className="flex justify-center items-center p-1 gap-2 mx-auto w-full shadow bg-gray-100 md:p-0 md:w-fit md:shadow-none md:bg-transparent rounded-md">
+        <div className="flex justify-center items-center min-h-[2.5rem] p-1 gap-2 mx-auto w-full shadow bg-gray-100 md:p-0 md:w-fit md:shadow-none md:bg-transparent rounded-md">
           {btns}
         </div>
       )}
@@ -99,7 +97,7 @@ export type StaffNavBar =
   | "Transactions"
   | "Payments"
   | "Customers"
-  | "Reports"
+  | "Chat"
   | "Staffs"
   | "Settings";
 
@@ -108,6 +106,7 @@ type Menu = {
   link: string;
   Icon: any;
   admin: boolean;
+  popup: boolean;
 };
 
 type NavBarProps = {
@@ -122,30 +121,35 @@ const NavBar = ({ select }: NavBarProps) => {
       link: "/dashboard",
       Icon: ChartBarSquareIcon,
       admin: false,
+      popup: false,
     },
     {
       name: "Transactions",
       link: "/transaction",
       Icon: ReceiptPercentIcon,
       admin: false,
+      popup: false,
     },
     {
       name: "Payments",
       link: "/payment",
       Icon: CreditCardIcon,
       admin: false,
+      popup: false,
     },
     {
       name: "Customers",
       link: "/customer",
       Icon: UserGroupIcon,
       admin: false,
+      popup: false,
     },
     {
-      name: "Reports",
-      link: "/report",
+      name: "Chat",
+      link: "https://chat.line.biz/U6ea5dae36089af76f9e63d4aeba4c5ec",
       Icon: ChatBubbleLeftRightIcon,
       admin: false,
+      popup: true,
     },
     { name: "Staffs", link: "/staff", Icon: UsersIcon, admin: true },
     {
@@ -153,6 +157,7 @@ const NavBar = ({ select }: NavBarProps) => {
       link: "/setting",
       Icon: Cog6ToothIcon,
       admin: true,
+      popup: false,
     },
   ] as Array<Menu>;
 
@@ -181,28 +186,39 @@ const NavBar = ({ select }: NavBarProps) => {
           MENU.admin && !isAdmin ? (
             <></>
           ) : (
-            <Link to={MENU.link} key={i}>
-              <div
-                className={`flex gap-1 justify-center items-center p-2 h-11 ${
-                  select === MENU.name
-                    ? "bg-rose-500 hover:bg-rose-400"
-                    : "bg-zinc-100 hover:bg-gray-300"
-                } rounded-md hover:cursor-pointer`}
-              >
-                <MENU.Icon
-                  className={`w-auto h-full aspect-square ${
-                    select === MENU.name && "text-white"
-                  }`}
-                />
-                <p
-                  className={`hidden md:block ${
-                    select === MENU.name && "text-white"
-                  } text-sm`}
+            (() => {
+              const content = (
+                <div
+                  className={`flex gap-1 justify-center items-center p-2 h-11 ${
+                    select === MENU.name
+                      ? "bg-rose-500 hover:bg-rose-400"
+                      : "bg-zinc-100 hover:bg-gray-300"
+                  } rounded-md hover:cursor-pointer`}
                 >
-                  {MENU.name}
-                </p>
-              </div>
-            </Link>
+                  <MENU.Icon
+                    className={`w-auto h-full aspect-square ${
+                      select === MENU.name && "text-white"
+                    }`}
+                  />
+                  <p
+                    className={`hidden md:block ${
+                      select === MENU.name && "text-white"
+                    } text-sm`}
+                  >
+                    {MENU.name}
+                  </p>
+                </div>
+              );
+              return MENU.popup ? (
+                <a href={MENU.link} target="_blank" key={i}>
+                  {content}
+                </a>
+              ) : (
+                <Link to={MENU.link} key={i}>
+                  {content}
+                </Link>
+              );
+            })()
           )
         )}
       </div>
@@ -212,7 +228,6 @@ const NavBar = ({ select }: NavBarProps) => {
             onClick={() => setShowMenu((p) => !p)}
             className="lg:hidden w-11 h-11 p-2 rounded-md bg-zinc-100 hover:bg-gray-300 hover:cursor-pointer"
           />
-          <NotificationPane />
           <div className="hidden sm:flex gap-2 items-center">
             <img src={logo} alt="" style={{ width: "48px" }} />
             <div className="">
@@ -226,28 +241,39 @@ const NavBar = ({ select }: NavBarProps) => {
             MENU.admin && !isAdmin ? (
               <></>
             ) : (
-              <Link to={MENU.link} key={i}>
-                <div
-                  className={`flex gap-1 justify-center items-center p-2 w-fit h-11 ${
-                    select === MENU.name
-                      ? "bg-rose-500 hover:bg-rose-400"
-                      : "bg-zinc-100 hover:bg-gray-300"
-                  } rounded-md hover:cursor-pointer`}
-                >
-                  <MENU.Icon
-                    className={`w-full h-full ${
-                      select === MENU.name && "text-white"
-                    }`}
-                  />
-                  <p
-                    className={`hidden 2xl:block ${
-                      select === MENU.name && "text-white"
-                    }`}
+              (() => {
+                const content = (
+                  <div
+                    className={`flex gap-1 justify-center items-center p-2 w-fit h-11 ${
+                      select === MENU.name
+                        ? "bg-rose-500 hover:bg-rose-400"
+                        : "bg-zinc-100 hover:bg-gray-300"
+                    } rounded-md hover:cursor-pointer`}
                   >
-                    {MENU.name}
-                  </p>
-                </div>
-              </Link>
+                    <MENU.Icon
+                      className={`w-full h-full ${
+                        select === MENU.name && "text-white"
+                      }`}
+                    />
+                    <p
+                      className={`hidden 2xl:block ${
+                        select === MENU.name && "text-white"
+                      }`}
+                    >
+                      {MENU.name}
+                    </p>
+                  </div>
+                );
+                return MENU.popup ? (
+                  <a href={MENU.link} target="_blank" key={i}>
+                    {content}
+                  </a>
+                ) : (
+                  <Link to={MENU.link} key={i}>
+                    {content}
+                  </Link>
+                );
+              })()
             )
           )}
         </div>
@@ -290,7 +316,6 @@ export function StaffLayout({
   const { user, loading, error } = useAuth();
   const location = useLocation();
   const dispatch = useAppDispatch();
-  useMessages(dispatch);
 
   // CASE: auth loading.
   // DO: show loading screen.
@@ -327,10 +352,15 @@ export function StaffLayout({
 
 type KioskLayoutProps = {
   node: Node;
+  current_state?: string;
   children?: ReactNode;
 };
 
-export function KioskLayout({ node, children }: KioskLayoutProps) {
+export function KioskLayout({
+  node,
+  current_state,
+  children,
+}: KioskLayoutProps) {
   const [time, setTime] = useState<string>(
     moment().format("dddd, MMMM DD YYYY, HH:mm:ss")
   );
@@ -346,7 +376,10 @@ export function KioskLayout({ node, children }: KioskLayoutProps) {
   }, []);
   return (
     <div className="w-screen h-screen">
-      <div className="flex justify-between items-center border-b shadow-md h-[13vh]">
+      <div className="h-[87vh] flex flex-col justify-center items-center">
+        {children}
+      </div>
+      <div className="flex justify-between items-center border-t shadow-md h-[13vh]">
         <div className="flex gap-[1vw] px-[1.5vw] items-center w-fit">
           <img src={logo} alt="" className="w-[9vh] h-[9vh]" />
           <div>
@@ -361,11 +394,25 @@ export function KioskLayout({ node, children }: KioskLayoutProps) {
           <p className="text-[4.5vh] text-rose-500 font-medium">{node}</p>
           <p className="text-[2vh] font-light text-gray-500 ">{time}</p>
         </div>
+        {current_state && (
+          <div className="absolute bottom-0 left-0 right-0 h-[13vh] flex justify-center items-center text-gray-500 font-light text-[3vh]">
+            State:{" "}
+            {current_state.charAt(0).toUpperCase() + current_state.slice(1)}
+          </div>
+        )}
       </div>
+    </div>
+  );
+}
 
-      <div className="h-[87vh] flex flex-col justify-center items-center">
-        {children}
-      </div>
+export function KioskStaffCalled() {
+  return (
+    <div
+      className="py-[2vh] px-[1vw] text-[3vh] text-green-700 bg-green-100 rounded-lg absolute top-[2vh] shadow-lg"
+      role="alert"
+    >
+      <span className="font-medium">Staff Called!</span> They will come help you
+      soon.
     </div>
   );
 }

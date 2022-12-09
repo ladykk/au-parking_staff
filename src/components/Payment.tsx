@@ -9,6 +9,11 @@ import no_img from "../assets/no-image.jpg";
 import { Button } from "./Form";
 import { updatePayment } from "../helpers/payment";
 import Loading from "./Loading";
+import { UserCard } from "./User";
+import { useAppSelector } from "../redux/store";
+import { selectCustomers } from "../redux/customers";
+import { selectTransactions } from "../redux/transactions";
+import { TransactionCard } from "./Transaction";
 
 type PaymentCardProps = {
   payment: PaymentWithRef;
@@ -40,10 +45,20 @@ export function PaymentCard({ payment }: PaymentCardProps) {
 type PaymentPreviewProps = { payment: PaymentWithRef };
 export function PaymentPreview({ payment }: PaymentPreviewProps) {
   // [States]
+  const customers = useAppSelector(selectCustomers);
+  const transactions = useAppSelector(selectTransactions);
   const [isModalShow, setModalShow] = useState<boolean>(false);
   const [isConfirmModalShow, setConfirmModalShow] = useState<boolean>(false);
   const [status, setStatus] = useState<PaymentStatus | undefined>();
   const [isRequest, setRequest] = useState<boolean>(false);
+
+  // [Data]
+  const customer = customers.find(
+    (customer) => customer.uid === payment.paid_by?.id
+  );
+  const transaction = transactions.find(
+    (transaction) => transaction.tid === payment._ref.parent.parent?.id
+  );
 
   // [Functions]
   // F - Handle modal.
@@ -116,11 +131,22 @@ export function PaymentPreview({ payment }: PaymentPreviewProps) {
         setShow={setModalShow}
       >
         <Body>
-          <img
-            src={payment.slip ? payment.slip : no_img}
-            alt=""
-            className="mx-auto w-full h-[75vh] object-scale-down"
-          />
+          <div className="flex flex-col gap-3">
+            <img
+              src={payment.slip ? payment.slip : no_img}
+              alt=""
+              className="mx-auto w-fit h-[55vh] object-scale-down border"
+            />
+            {customer && (
+              <UserCard
+                id={customer.uid}
+                displayName={customer.displayName}
+                photoUrl={customer.photoUrl}
+                type="Customer"
+              />
+            )}
+            {transaction && <TransactionCard transaction={transaction} box />}
+          </div>
         </Body>
 
         {payment.status === "Pending" && (
@@ -171,11 +197,11 @@ export function PaymentStatusBadge({
           ? "yellow"
           : status === "Refund"
           ? "gray"
-          : "blue"
+          : "gray"
       }
       expand={expand}
     >
-      {status}
+      {status ? status : "Process"}
     </Badge>
   );
 }

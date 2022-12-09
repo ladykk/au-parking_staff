@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { LicensePlate } from "../../components/Car";
 import FilterPanel from "../../components/FilterPanel";
-import { Checkbox, Select } from "../../components/Form";
+import { Checkbox, Input, Select } from "../../components/Form";
 import Table, {
   Pagination,
   TBody,
@@ -12,7 +12,7 @@ import Table, {
   TSpan,
   usePagination,
 } from "../../components/Table";
-import { TransactionStatusBadge } from "../../components/Transaction";
+import { TIDInput, TransactionStatusBadge } from "../../components/Transaction";
 import { StaffLayout, Header, Main } from "../../components/Layout";
 import {
   selectTransactions,
@@ -63,11 +63,12 @@ function TransactionList() {
           hideBack
           title={`Transactions' List (${transactions.length})`}
           subTitle={`Updated on: ${updateTime}`}
-          btns={
+          btns={[
+            <TIDInput />,
             <Link to="/transaction/add">
-              <PlusCircleIcon className="w-10 h-10 p-1 hover:bg-gray-300 rounded-md" />
-            </Link>
-          }
+              <PlusCircleIcon className="w-10 h-10 p-1 hover:bg-gray-300 rounded-md hover:cursor-pointer" />
+            </Link>,
+          ]}
         />
         <FilterPanel onClear={() => setFilters(defaultFilters)}>
           <Select

@@ -15,7 +15,7 @@ import {
   selectCustomersUpdateTime,
 } from "../../redux/customers";
 import { useAppSelector } from "../../redux/store";
-import { Customer } from "../../types/customer";
+import { CustomerWithRef } from "../../types/customer";
 
 // P - Customers' list
 function CustomerList() {
@@ -25,7 +25,7 @@ function CustomerList() {
 
   // [Pagination]
   const { currentPage, setPage, currentItems, itemsPerPage } =
-    usePagination<Customer>(customers);
+    usePagination<CustomerWithRef>(customers);
 
   return (
     <StaffLayout

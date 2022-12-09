@@ -54,7 +54,7 @@ export function UserCard({ id, displayName, photoUrl, type }: UserCardProps) {
 
   return (
     <div
-      className={`flex border rounded-lg px-3 py-2 gap-4 items-center hover:bg-zinc-50 shadow ${
+      className={`flex border rounded-lg px-3 py-2 gap-4 items-center flex-1 hover:bg-zinc-50 shadow ${
         id && "cursor-pointer"
       }`}
       onClick={handleNavigate}

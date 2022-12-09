@@ -12,6 +12,7 @@ import { StaffLayout, Header, Main, Panel } from "../../../components/Layout";
 import { timestampToString } from "../../../utils/datetime";
 import {
   SetTransactionExitModal,
+  ShareTransaction,
   TransactionStatusBadge,
 } from "../../../components/Transaction";
 import {
@@ -24,14 +25,19 @@ import Feedback from "../../../components/Feedback";
 import { useGetTransaction } from "../../../helpers/transaction";
 import { useAppSelector } from "../../../redux/store";
 import { selectCustomers } from "../../../redux/customers";
+import { selectStaffs } from "../../../redux/staffs";
 
 // P - Transaction detail
 function TransactionDetail() {
   // [States]
   const customers = useAppSelector(selectCustomers);
+  const staffs = useAppSelector(selectStaffs);
   // [Hooks]
   const { tid } = useParams();
   const { transaction, updateTime } = useGetTransaction(tid as string, "Staff");
+
+  // [Data]
+  const staff = staffs.find((staff) => staff.email === transaction?.add_by?.id);
 
   return (
     <StaffLayout
@@ -45,6 +51,7 @@ function TransactionDetail() {
           subTitle={`Updated on: ${updateTime}`}
           btns={[
             <SetTransactionExitModal transaction={transaction} />,
+            <ShareTransaction tid={transaction?.tid} />,
             transaction && transaction.status !== "Cancel" && (
               <Link to={`/transaction/${tid ? `${tid}/edit` : ""}`}>
                 <PencilSquareIcon className="w-10 h-10 p-1 rounded-md hover:bg-gray-200 hover:cursor-pointer" />
@@ -53,7 +60,7 @@ function TransactionDetail() {
           ]}
         />
 
-        <div className="w-full flex flex-col gap-3 md:flex-row justify-between lg:gap-5">
+        <div className="w-full flex flex-col gap-3 lg:flex-row justify-between lg:gap-5">
           {transaction ? (
             <>
               <div className="flex flex-col gap-3 flex-1">
@@ -96,7 +103,18 @@ function TransactionDetail() {
                       />
                       <TPair
                         header="Add by"
-                        value={transaction.add_by ? "Staff" : "System"}
+                        value={
+                          staff ? (
+                            <Link
+                              to={`/staff/${staff.email}`}
+                              className="underline"
+                            >
+                              {staff.displayName}
+                            </Link>
+                          ) : (
+                            "System"
+                          )
+                        }
                       />
                     </TBody>
                   </Table>
@@ -146,13 +164,27 @@ function TransactionDetail() {
                             center
                             data={[
                               <PaymentStatusBadge status={payment.status} />,
-                              payment.amount ? `${payment.amount} ฿` : "-",
+                              payment.amount
+                                ? `${payment.amount.toFixed(2)} ฿`
+                                : "-",
                               timestampToString(payment.timestamp),
                               payment.paid_by
-                                ? customers.find(
-                                    (customer) =>
-                                      customer.uid === payment.paid_by?.id
-                                  )?.displayName ?? "-"
+                                ? (() => {
+                                    const customer = customers.find(
+                                      (customer) =>
+                                        customer.uid === payment.paid_by?.id
+                                    );
+                                    return customer ? (
+                                      <Link
+                                        to={`/customer/${customer.uid}`}
+                                        className="underline"
+                                      >
+                                        {customer.displayName}
+                                      </Link>
+                                    ) : (
+                                      "-"
+                                    );
+                                  })()
                                 : "-",
                               <PaymentPreview payment={payment} />,
                             ]}

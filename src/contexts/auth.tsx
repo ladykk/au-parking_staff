@@ -12,20 +12,17 @@ import {
   useSignInWithEmailAndPassword,
   useSignOut,
 } from "react-firebase-hooks/auth";
-import { Authentication, Messages } from "../utils/firebase";
+import { Authentication } from "../utils/firebase";
 import { User } from "firebase/auth";
 import { getCustomersSnapshot } from "../helpers/customer";
 import { useAppDispatch } from "../redux/store";
-import { addFCMToken, getStaffsSnapshot } from "../helpers/staff";
+import { getStaffsSnapshot } from "../helpers/staff";
 import { FormError } from "../utils/error";
 import { getTransactionsSnapshot } from "../helpers/transaction";
 import { clearStaffs } from "../redux/staffs";
 import { FirebaseError } from "firebase/app";
 import { clearTransactions } from "../redux/transactions";
 import { clearCustomers } from "../redux/customers";
-import { clearReports } from "../redux/reports";
-import { getReportsSnapshot } from "../helpers/report";
-import { getToken } from "firebase/messaging";
 
 // [Context]
 interface AuthContextType {
@@ -100,7 +97,6 @@ export function AuthProvider({
     dispatch(clearStaffs());
     dispatch(clearTransactions());
     dispatch(clearCustomers());
-    dispatch(clearReports());
   }, [dispatch]);
 
   // F - Login.
@@ -137,13 +133,6 @@ export function AuthProvider({
     // DO: reject.
     if (!user) return;
 
-    // Register message.
-    getToken(Messages, { vapidKey: import.meta.env.VITE_VAPID_KEY }).then(
-      async (token) => {
-        await addFCMToken(user.email as string, token);
-      }
-    );
-
     // Register snapshots.
     // -> customers
     const customers_unsub = getCustomersSnapshot(dispatch);
@@ -151,15 +140,12 @@ export function AuthProvider({
     const staffs_unsub = getStaffsSnapshot(dispatch);
     // -> transactions
     const transactions_unsub = getTransactionsSnapshot(dispatch);
-    // -> reports
-    const reports_unsub = getReportsSnapshot(dispatch);
 
     // Return unsubscribers
     return () => {
       customers_unsub();
       staffs_unsub();
       transactions_unsub();
-      reports_unsub();
     };
   }, [user, dispatch]);
 

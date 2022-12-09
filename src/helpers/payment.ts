@@ -17,6 +17,7 @@ import { Firestore } from "../utils/firebase";
 import { Payment, PaymentStatus, PaymentWithRef } from "../types/payment";
 import { getUpdateTime } from "../utils/datetime";
 import { handleHelperError } from "../utils/error";
+import { customerDocument } from "./customer";
 
 // [Collections]
 export const transactionPaymentCollection = (tid: string) =>
@@ -57,6 +58,36 @@ export const useGetPendingPayment = () => {
       );
       return unsub;
     })();
+  }, []);
+
+  return { payments, updateTime };
+};
+
+// S - Customer payments snapshot.
+export const useGetCustomerPayments = (uid: string) => {
+  const [payments, setPayments] = useState<Array<PaymentWithRef>>([]);
+  const [updateTime, setUpdateTime] = useState<string>("Updating...");
+
+  // [Effects]
+  useEffect(() => {
+    const unsub = onSnapshot<Payment>(
+      query<Payment>(
+        paymentsCollection(),
+        where("paid_by", "==", customerDocument(uid)),
+        orderBy("timestamp", "desc")
+      ),
+      (snapshot) => {
+        const payments = snapshot.docs.map((doc) => ({
+          ...doc.data(),
+          _ref: doc.ref,
+        }));
+        setPayments(payments);
+        setUpdateTime(getUpdateTime());
+      },
+      (err) => handleHelperError("useGetPendingPayments", err)
+    );
+
+    return unsub;
   }, []);
 
   return { payments, updateTime };

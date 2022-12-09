@@ -17,7 +17,7 @@ import { selectTransactions } from "../../redux/transactions";
 
 // [Default States]
 const formState = {
-  mannual: false,
+  manual: false,
   license_number: "",
   timestamp_in: "",
   image_in: null,
@@ -76,9 +76,9 @@ function AddTransaction() {
           title="Add Transaction"
           btns={[
             <Toggle
-              name="mannual"
-              placeholder="Mannual"
-              checked={form.mannual}
+              name="manual"
+              placeholder="Manual"
+              checked={form.manual}
               setForm={setForm}
               noSpacer
             />,
@@ -90,7 +90,7 @@ function AddTransaction() {
             onSubmit={handleOnSubmit}
             error={errors.form}
           >
-            {form.mannual && (
+            {form.manual && (
               <>
                 <div className="max-w-[400px] mx-auto mb-4">
                   <ImageViewer title="Image-In" src={imageInPreview} />
@@ -115,7 +115,7 @@ function AddTransaction() {
               error={errors.license_number}
               required
             />
-            {form.mannual && (
+            {form.manual && (
               <Input
                 name="timestamp_in"
                 placeholder="Timestamp-In"

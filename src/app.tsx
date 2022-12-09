@@ -11,8 +11,6 @@ import StaffDetail from "./routes/staff/[email]";
 import EditStaff from "./routes/staff/[email]/edit";
 import Settings from "./routes/setting";
 import NodeControl from "./routes/setting/[node]";
-import ReportList from "./routes/report";
-import ReportDetail from "./routes/report/[rid]";
 import Dashboard from "./routes/dashboard";
 import PendingPaymentList from "./routes/payment";
 import CustomerList from "./routes/customer";
@@ -55,13 +53,6 @@ function MyApp() {
     {
       path: "payment",
       element: <PendingPaymentList />,
-    },
-    {
-      path: "report",
-      children: [
-        { path: "", element: <ReportList /> },
-        { path: ":rid", element: <ReportDetail /> },
-      ],
     },
     {
       path: "setting",

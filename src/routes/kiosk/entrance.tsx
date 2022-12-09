@@ -1,8 +1,10 @@
 import Loading from "../../components/Loading";
 import Spinner from "../../components/Spinner";
 import { useNodeInfo } from "../../helpers/setting";
-import { KioskLayout } from "../../components/Layout";
+import { KioskLayout, KioskStaffCalled } from "../../components/Layout";
 import line_qr from "../../assets/line-qr.png";
+import app_1 from "../../assets/app-1.png";
+import app_2 from "../../assets/app-2.png";
 import { useEffect, useState } from "react";
 import { secondsFromNow, timestampToString } from "../../utils/datetime";
 import QRCode from "react-qr-code";
@@ -49,18 +51,18 @@ function EntranceKiosk() {
   }, [info?.state.status.current_state, info?.state.status.enter_timestamp]);
 
   return (
-    <KioskLayout node="Entrance">
+    <KioskLayout
+      node="Entrance"
+      current_state={info?.state.status.current_state}
+    >
       <Loading isLoading={isLoading} />
-
-      <div className="absolute top-0 h-[13vh] flex justify-center items-center text-gray-500 text-[3vh]">
-        State: {info?.state.status.current_state}
-      </div>
       {!isLoading && info?.node === "Entrance" ? (
         // [S0]: Idle
         info.state.status.current_state === "idle" ? (
-          <div className="flex gap-[10vw] items-center justify-center">
-            <div className="bg-gray-500 w-[30vw] h-[70vh] text-white text-[2.5vh] text-center">
-              Place holder
+          <div className="flex gap-[5vw] items-center justify-center">
+            <div className="flex h-[70vh] text-white text-[2.5vh] text-center">
+              <img src={app_1} alt="" className="h-full w-auto" />
+              <img src={app_2} alt="" className="h-full w-auto" />
             </div>
             <div className="flex flex-col max-w-[43vw] gap-[2vh] justify-center items-center">
               <p className="text-rose-500 font-medium text-[6vh] text-center">
@@ -172,6 +174,7 @@ function EntranceKiosk() {
           transaction ? (
           transaction.timestamp_out ? (
             <div className="flex gap-[5vw] items-center justify-center">
+              {info.state.status.info.call_staff && <KioskStaffCalled />}
               <div className="flex flex-col gap-[4vh]">
                 <div className="bg-white p-[2vh] rounded-[2vh] w-auto h-[45vh] aspect-square flex justify-center items-center mx-auto shadow-lg border-[0.2vh]">
                   <QRCode
@@ -225,6 +228,7 @@ function EntranceKiosk() {
           ) : (
             // [S4]: Failed (TID: License number exists)
             <div className="flex gap-[5vw] items-center justify-center">
+              {info.state.status.info.call_staff && <KioskStaffCalled />}
               {transaction?.image_in && (
                 <div className="flex flex-col gap-[2vh]">
                   <img
@@ -263,6 +267,7 @@ function EntranceKiosk() {
         ) : (
           // [S4]: Failed (Other reason)
           <div className="flex flex-col gap-[4vh] w-[40vw]">
+            {info.state.status.info.call_staff && <KioskStaffCalled />}
             <div className="flex flex-col gap-[2vh]">
               <XCircleIcon className="text-rose-500 w-auto h-[18vh] mb-[4vh]" />
               <p className="text-rose-500 font-medium text-[6vh] text-center">

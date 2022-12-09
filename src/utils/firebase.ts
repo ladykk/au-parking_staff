@@ -4,12 +4,12 @@ import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 import { getFirestore } from "firebase/firestore";
 import { getFunctions } from "firebase/functions";
-import { getMessaging } from "firebase/messaging";
 import { FormError, handleHelperError } from "./error";
 import { ref, uploadBytes, getDownloadURL, getStorage } from "firebase/storage";
 import { getUpdateTime, inputToMoment, momentToUploadString } from "./datetime";
 import FileResizer from "react-image-file-resizer";
 import { SendImage } from "../types/chat";
+import { isLocalhost } from "../serviceWorkerRegistration";
 
 // Client Configuration.
 const FIREBASE_CONFIG: FirebaseOptions = {
@@ -26,6 +26,10 @@ const FIREBASE_CONFIG: FirebaseOptions = {
 
 // Initialize App.
 const App = initializeApp(FIREBASE_CONFIG);
+if (isLocalhost)
+  // @ts-ignore
+  window.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+
 initializeAppCheck(App, {
   provider: new ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_SITE_KEY),
   isTokenAutoRefreshEnabled: true,
@@ -33,7 +37,6 @@ initializeAppCheck(App, {
 
 // Export Services.
 export const Authentication = getAuth(App);
-export const Messages = getMessaging(App);
 export const Firestore = getFirestore(App);
 export const RTDatabase = getDatabase(App);
 export const Functions = getFunctions(App, "asia-southeast2");

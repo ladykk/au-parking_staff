@@ -410,6 +410,7 @@ type InputProps = {
   setError?: Dispatch<SetStateAction<any>>;
   noSpacer?: boolean;
   subfix?: string;
+  sidePlaceHolder?: boolean;
 };
 export function Input({
   name = "",
@@ -423,6 +424,7 @@ export function Input({
   setError,
   noSpacer,
   subfix,
+  sidePlaceHolder,
 }: InputProps) {
   // [Settings]
   const color = error ? "rose" : "gray";
@@ -452,7 +454,11 @@ export function Input({
   };
 
   return (
-    <div className={`${!noSpacer && "mb-4"}`}>
+    <div
+      className={`${!noSpacer && "mb-4"} ${
+        sidePlaceHolder && "flex gap-3 items-center"
+      }`}
+    >
       <label className={`block mb-2 text-sm font-medium text-${color}-600`}>
         {placeholder} {required && <span className="text-rose-500">*</span>}
       </label>
