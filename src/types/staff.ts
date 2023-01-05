@@ -37,7 +37,6 @@ export type AddStaff = {
   displayName: string;
   phone_number: string;
   photoUrl?: string;
-  add_by?: string;
 };
 
 export type AddStaffForm = {
@@ -49,7 +48,6 @@ export type AddStaffForm = {
   photo?: File | null;
   password: string;
   confirm_password?: string;
-  add_by?: string;
 };
 
 export type AddStaffErrors = {

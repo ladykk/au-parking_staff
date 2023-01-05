@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { Form, Input, Select, FileInput } from "../../components/Form";
 import useAuth from "../../contexts/auth";
 import { StaffLayout, Header, Main } from "../../components/Layout";
@@ -20,7 +20,6 @@ const formState = {
   photo: null,
   password: "",
   confirm_password: "",
-  add_by: "",
 };
 
 const errorsState = {
@@ -46,14 +45,6 @@ function AddStaff() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   useUpdateFilePreview(form.photo, setPhotoPreview);
-
-  // [Effects]
-  // E - Set staff email to add_by.
-  useEffect(() => {
-    setForm((f) => {
-      return { ...f, add_by: user ? (user.email as string) : "" };
-    });
-  }, [user]);
 
   // [Functions]
   // F - On submit.

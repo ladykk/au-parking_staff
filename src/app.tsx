@@ -12,7 +12,6 @@ import EditStaff from "./routes/staff/[email]/edit";
 import Settings from "./routes/setting";
 import NodeControl from "./routes/setting/[node]";
 import Dashboard from "./routes/dashboard";
-import PendingPaymentList from "./routes/payment";
 import CustomerList from "./routes/customer";
 import CustomerDetail from "./routes/customer/[uid]";
 import Loading from "./components/Loading";
@@ -49,10 +48,6 @@ function MyApp() {
           element: <ExitKiosk />,
         },
       ],
-    },
-    {
-      path: "payment",
-      element: <PendingPaymentList />,
     },
     {
       path: "setting",

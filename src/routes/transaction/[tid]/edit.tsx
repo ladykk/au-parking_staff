@@ -6,10 +6,7 @@ import {
   EditTransactionForm,
 } from "../../../types/transaction";
 import ImageViewer from "../../../components/ImageViewer";
-import {
-  PaymentStatusBadge,
-  PaymentPreview,
-} from "../../../components/Payment";
+import { PaymentStatusBadge, PaymentRefund } from "../../../components/Payment";
 import Table, {
   TPair,
   THead,
@@ -205,7 +202,7 @@ function EditTransaction() {
                         "Amount",
                         "Timestamp",
                         "Payer",
-                        "Slip",
+                        "Refund",
                       ]}
                     />
                     <TBody>
@@ -239,7 +236,7 @@ function EditTransaction() {
                                     );
                                   })()
                                 : "-",
-                              <PaymentPreview payment={payment} />,
+                              <PaymentRefund payment={payment} />,
                             ]}
                           />
                         ))

@@ -1,5 +1,4 @@
 import { FirebaseOptions, initializeApp } from "firebase/app";
-import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 import { getFirestore } from "firebase/firestore";
@@ -9,7 +8,6 @@ import { ref, uploadBytes, getDownloadURL, getStorage } from "firebase/storage";
 import { getUpdateTime, inputToMoment, momentToUploadString } from "./datetime";
 import FileResizer from "react-image-file-resizer";
 import { SendImage } from "../types/chat";
-import { isLocalhost } from "../serviceWorkerRegistration";
 
 // Client Configuration.
 const FIREBASE_CONFIG: FirebaseOptions = {
@@ -26,14 +24,6 @@ const FIREBASE_CONFIG: FirebaseOptions = {
 
 // Initialize App.
 const App = initializeApp(FIREBASE_CONFIG);
-if (isLocalhost)
-  // @ts-ignore
-  window.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
-
-initializeAppCheck(App, {
-  provider: new ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_SITE_KEY),
-  isTokenAutoRefreshEnabled: true,
-});
 
 // Export Services.
 export const Authentication = getAuth(App);

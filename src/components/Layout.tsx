@@ -95,7 +95,6 @@ export function Panel({
 export type StaffNavBar =
   | "Dashboard"
   | "Transactions"
-  | "Payments"
   | "Customers"
   | "Chat"
   | "Staffs"
@@ -130,13 +129,7 @@ const NavBar = ({ select }: NavBarProps) => {
       admin: false,
       popup: false,
     },
-    {
-      name: "Payments",
-      link: "/payment",
-      Icon: CreditCardIcon,
-      admin: false,
-      popup: false,
-    },
+
     {
       name: "Customers",
       link: "/customer",
