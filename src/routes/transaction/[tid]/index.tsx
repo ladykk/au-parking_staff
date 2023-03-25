@@ -15,10 +15,7 @@ import {
   ShareTransaction,
   TransactionStatusBadge,
 } from "../../../components/Transaction";
-import {
-  PaymentStatusBadge,
-  PaymentPreview,
-} from "../../../components/Payment";
+import { PaymentStatusBadge, PaymentRefund } from "../../../components/Payment";
 import { PencilSquareIcon } from "@heroicons/react/24/solid";
 import { TextArea } from "../../../components/Form";
 import Feedback from "../../../components/Feedback";
@@ -152,7 +149,7 @@ function TransactionDetail() {
                         "Amount",
                         "Timestamp",
                         "Payer",
-                        "Slip",
+                        "Refund",
                       ]}
                     />
                     <TBody>
@@ -186,7 +183,7 @@ function TransactionDetail() {
                                     );
                                   })()
                                 : "-",
-                              <PaymentPreview payment={payment} />,
+                              <PaymentRefund payment={payment} />,
                             ]}
                           />
                         ))

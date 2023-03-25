@@ -234,6 +234,7 @@ export function TransactionCancelModal({
       setRequest(true);
       if (transaction) {
         await cancelTransaction(transaction.tid);
+        setShowModal(false);
         navigate("/transaction", { replace: true });
       }
     } catch (err: any) {

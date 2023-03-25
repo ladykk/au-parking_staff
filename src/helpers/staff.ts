@@ -3,11 +3,10 @@ import {
   CollectionReference,
   doc,
   DocumentReference,
-  getDoc,
   onSnapshot,
   query,
 } from "firebase/firestore";
-import { Firestore, Functions, RTDatabase } from "../utils/firebase";
+import { Firestore, Functions } from "../utils/firebase";
 import { setStaffs } from "../redux/staffs";
 import { AppDispatch } from "../redux/store";
 import {
@@ -17,14 +16,12 @@ import {
   EditStaffForm,
   Staff,
   StaffRole,
-  StaffWithRef,
 } from "../types/staff";
 import { FormError, handleHelperError } from "../utils/error";
 import { uploadStaffProfile } from "../utils/firebase";
 import axios from "axios";
 import { httpsCallable } from "firebase/functions";
 import { FirebaseError } from "firebase/app";
-import { ref, set } from "firebase/database";
 
 // [Staff Helpers]
 
@@ -70,7 +67,6 @@ export const addStaff = async (form: AddStaffForm) => {
       role: form.role as StaffRole,
       displayName: form.displayName,
       phone_number: form.phone_number,
-      add_by: form.add_by,
     };
     // Upload profile.
     if (form.photo)

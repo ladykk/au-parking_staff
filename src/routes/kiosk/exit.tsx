@@ -63,7 +63,7 @@ function ExitKiosk() {
   return (
     <KioskLayout node="Exit">
       <Loading isLoading={isLoading} />
-      <div className="absolute top-0 h-[13vh] flex justify-center items-center text-gray-500 text-[3vh]">
+      <div className="absolute bottom-0 h-[13vh] flex justify-center items-center text-gray-500 text-[3vh]">
         State: {info?.state.status.current_state}
       </div>
       {!isLoading && info?.node === "Exit" ? (
@@ -248,7 +248,7 @@ function ExitKiosk() {
         ) : (
           // [S4]: Failed
           <div className="flex flex-col gap-[4vh] w-[40vw]">
-            {info.state.status.info.call_staff && <KioskStaffCalled />}
+            {info.state.status.info?.call_staff && <KioskStaffCalled />}
             <div className="flex flex-col gap-[2vh]">
               <XCircleIcon className="text-rose-500 w-auto h-[18vh] mb-[4vh]" />
               <p className="text-rose-500 font-medium text-[6vh] text-center">
@@ -258,7 +258,7 @@ function ExitKiosk() {
                 Cannot close transaction in the system.
               </p>
               <p className="text-[4vh] text-center text-gray-500">
-                Reason: {info.state.status.info.reason}
+                Reason: {info.state.status.info?.reason}
               </p>
               <p className="text-[2.5vh] text-center text-gray-500 font-light">
                 Display will change within {currentTimeout}{" "}

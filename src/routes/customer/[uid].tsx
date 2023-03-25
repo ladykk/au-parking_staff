@@ -15,7 +15,7 @@ import { StaffLayout, Header, Main, Panel } from "../../components/Layout";
 import Feedback from "../../components/Feedback";
 import { useGetCustomerByUID } from "../../helpers/customer";
 import { useGetCustomerPayments } from "../../helpers/payment";
-import { PaymentStatusBadge, PaymentPreview } from "../../components/Payment";
+import { PaymentStatusBadge, PaymentRefund } from "../../components/Payment";
 import customers from "../../redux/customers";
 import { timestampToString } from "../../utils/datetime";
 import { PaymentWithRef } from "../../types/payment";
@@ -135,7 +135,13 @@ export function CustomerDetail() {
                     }
                   >
                     <THead
-                      columns={["Status", "Amount", "Timestamp", "TID", "Slip"]}
+                      columns={[
+                        "Status",
+                        "Amount",
+                        "Timestamp",
+                        "TID",
+                        "Refund",
+                      ]}
                     />
                     <TBody>
                       {currentItems.length > 0 ? (
@@ -155,7 +161,7 @@ export function CustomerDetail() {
                               >
                                 {payment._ref.parent.parent?.id}
                               </Link>,
-                              <PaymentPreview payment={payment} />,
+                              <PaymentRefund payment={payment} />,
                             ]}
                           />
                         ))

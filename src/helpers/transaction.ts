@@ -157,7 +157,8 @@ export const addTransaction = async (
   };
   // Check if exists.
   const in_system_transactions = transactions.filter(
-    (transaction) => transaction.timestamp_out === null
+    (transaction) =>
+      transaction.timestamp_out === null && !transaction.is_cancel
   );
   if (
     in_system_transactions.some(

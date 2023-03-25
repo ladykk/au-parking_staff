@@ -157,7 +157,6 @@ export type EditNodeForm = {
 
 export type SettingsInfo = {
   fee: number;
-  promptpay: string;
 };
 
 export type SettingsForm = SettingsInfo;
