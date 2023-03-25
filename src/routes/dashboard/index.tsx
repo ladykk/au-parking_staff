@@ -20,7 +20,8 @@ function Dashboard() {
     )
   );
   const exists_transactions = transactions.filter(
-    (transaction) => transaction.timestamp_out === null
+    (transaction) =>
+      transaction.timestamp_out === null && !transaction.is_cancel
   );
   const unpaid_transactions = transactions.filter(
     (transaction) => transaction.status === "Unpaid"
@@ -28,6 +29,10 @@ function Dashboard() {
   const paid_transactions = transactions.filter(
     (transaction) => transaction.status === "Paid"
   );
+  const total_transactions = transactions.filter(
+    (transaction) => !transaction.is_cancel
+  );
+
   // > Payment
   const { approve, pending, remain } = (() => {
     let approve = 0;
@@ -94,7 +99,7 @@ function Dashboard() {
 
                 <Card
                   header="Total"
-                  value={transactions.length.toFixed(0)}
+                  value={total_transactions.length.toFixed(0)}
                   color="gray"
                 />
               </div>
